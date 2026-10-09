@@ -60,6 +60,20 @@ docs/         website enquiry form snippet
 scripts/      build-release.sh  (upload-ready zip banata hai)
 ```
 
+## Apne computer par chalana (sabse aasan: XAMPP, Windows)
+
+Node / npm ki zaroorat **nahi** - `deploy/brahma-dashboard.zip` pehle se bana hua hai (code badalne par `./scripts/build-release.sh` se dobara banta hai).
+
+1. **XAMPP** install karo (PHP 8.1 ya naya wala version) aur XAMPP Control Panel se **Apache** aur **MySQL** Start karo.
+2. Browser mein `http://localhost/phpmyadmin` -> **New** -> database ka naam `brahma_dashboard`, collation `utf8mb4_unicode_ci` -> Create.
+3. `deploy/brahma-dashboard.zip` ko extract karo. Andar ka `dashboard` folder `C:\xampp\htdocs\` mein copy karo.
+4. `C:\xampp\htdocs\dashboard\api\config.sample.php` ko copy karke `config.php` naam do, aur kholkar ye bharo:
+   `host` = `localhost`, `name` = `brahma_dashboard`, `user` = `root`, `pass` = (khali), `setup_key` = koi lamba text.
+5. Browser mein `http://localhost/dashboard/api/setup.php` kholo -> apna naam / email / password daalo -> **Install**. Phir `setup.php` delete kar do.
+6. `http://localhost/dashboard/` kholo aur login karo.
+
+**Zaroori software:** PHP **8.1+** (8.3 recommended) with `pdo_mysql`, `mbstring`, `zlib`; MySQL 5.7+ ya MariaDB 10.3+. (cPanel mein bhi PHP version 8.1+ chunna.)
+
 ## Hosting par lagana (cPanel / shared hosting)
 
 Recommended: subdomain `dashboard.brahmaenglishacademy.com` (HTTPS ke saath).
