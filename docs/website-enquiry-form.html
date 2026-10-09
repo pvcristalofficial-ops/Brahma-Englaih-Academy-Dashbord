@@ -1,0 +1,44 @@
+<!--
+  Brahma English Academy - website enquiry form (paste into any page of brahmaenglishacademy.com)
+
+  1. In backend config.php set  'public_form_key' => 'some-long-random-text'
+     and make sure your site is listed in 'public_form_origins'.
+  2. Replace FORM_KEY and API_URL below.
+  Every submission lands in the dashboard as a new enquiry (source = Website Form) and appears in
+  Today's follow-ups. If the same mobile number submits again, NO duplicate is created - the existing
+  enquiry is brought back to today's list with a "Enquired again" note.
+-->
+<form id="bea-enquiry" style="max-width:420px;font-family:system-ui,sans-serif">
+  <input name="student_name" placeholder="Student name" required maxlength="100" style="width:100%;padding:10px;margin:6px 0">
+  <input name="phone" type="tel" placeholder="Mobile number" required pattern="[0-9+ \-]{10,16}" style="width:100%;padding:10px;margin:6px 0">
+  <select name="course" style="width:100%;padding:10px;margin:6px 0">
+    <option value="">Course interested in</option>
+    <option>Spoken English</option>
+    <option>IELTS / PTE Preparation</option>
+    <option>Kids English (School Students)</option>
+  </select>
+  <textarea name="message" placeholder="Message (optional)" maxlength="500" style="width:100%;padding:10px;margin:6px 0"></textarea>
+  <!-- honeypot: hidden from humans, bots fill it -->
+  <input name="company" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+  <button type="submit" style="padding:12px 20px;background:#2a60ad;color:#fff;border:0;border-radius:8px;font-weight:600">Request a call back</button>
+  <p id="bea-msg" role="status"></p>
+</form>
+<script>
+  const FORM_KEY = 'PUT-YOUR-PUBLIC-FORM-KEY-HERE';
+  const API_URL = 'https://dashboard.brahmaenglishacademy.com/api/public/enquiry';
+  document.getElementById('bea-enquiry').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('bea-msg');
+    const body = Object.fromEntries(new FormData(e.target));
+    // Optional: pass the Meta campaign from the landing-page URL  ?utm_campaign=diwali-offer
+    body.campaign = new URLSearchParams(location.search).get('utm_campaign') || '';
+    body.key = FORM_KEY;
+    msg.textContent = 'Sending...';
+    try {
+      const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json();
+      msg.textContent = r.ok ? j.data.message : (j.error && j.error.message) || 'Could not send. Please call us.';
+      if (r.ok) e.target.reset();
+    } catch (err) { msg.textContent = 'Network error. Please call us.'; }
+  });
+</script>

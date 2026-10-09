@@ -3,6 +3,7 @@ dist/
 .env
 .env.*
 !.env.example
+!.env.development
 backend/config.php
 backend/storage/sessions/*
 backend/storage/backups/
@@ -11,3 +12,4 @@ backend/storage/setup.lock
 !backend/storage/**/.gitkeep
 *.log
 .DS_Store
+release/

@@ -335,8 +335,9 @@ final class AdmissionController
             'upcoming'         => [$today, $week],
             default            => [],
         };
+        $limit = $req->qInt('limit', 500, 0, 500);
         $rows = Db::all(
-            "SELECT a.* FROM admissions a WHERE $base$extra ORDER BY a.next_due_date IS NULL, a.next_due_date ASC, a.id ASC LIMIT 500",
+            "SELECT a.* FROM admissions a WHERE $base$extra ORDER BY a.next_due_date IS NULL, a.next_due_date ASC, a.id ASC LIMIT $limit",
             $params
         );
         $c = Db::one(

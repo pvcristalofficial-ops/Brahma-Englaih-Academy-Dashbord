@@ -26,8 +26,9 @@ class Client {
       },
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
-    const set = res.headers.get('set-cookie');
-    if (set) this.cookie = set.split(';')[0];
+    // Like a browser: when several Set-Cookie headers arrive (session start + regenerate), the last one wins.
+    const all = res.headers.getSetCookie();
+    if (all.length) this.cookie = all[all.length - 1].split(';')[0];
     const text = await res.text();
     let json = null;
     try { json = JSON.parse(text); } catch { /* not json */ }
